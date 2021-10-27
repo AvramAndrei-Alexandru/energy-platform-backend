@@ -6,9 +6,11 @@ on:
     - master
 
 jobs:
-  build_icolors:
+  build_backend:
     runs-on: ubuntu-latest
     steps:
+    - name: Test
+    - run: dotnet test --no-restore --verbosity normal
     - uses: actions/checkout@v1
     - name: Build and deploy the Docker image
       env: 

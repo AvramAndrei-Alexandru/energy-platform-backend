@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EnergyDataPlatform.src.Application.Models;
 using EnergyDataPlatform.src.Application.Services.Interfaces;
+using System.Security.Claims;
 
 namespace EnergyDataPlatform.src.Presentation.Controllers
 {
@@ -50,7 +51,7 @@ namespace EnergyDataPlatform.src.Presentation.Controllers
         [Authorize(Roles = "Client")]
         public ActionResult<List<SmartDeviceDashboardModel>> GetAllDevicesForCurrentUser()
         {
-            return Ok(_smartDeviceService.GetAllSmartDevicesForCurrentUser());
+            return Ok(_smartDeviceService.GetAllSmartDevicesForCurrentUser(User.FindFirstValue(ClaimTypes.Name)));
         }
 
         [HttpDelete("Device/{id}")]

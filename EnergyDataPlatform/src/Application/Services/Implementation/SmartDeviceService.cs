@@ -34,10 +34,9 @@ namespace EnergyDataPlatform.src.Application.Services.Implementation
             return _smartDeviceRepository.GetAllDevicesForUser(userId).Select(d => SmartDeviceMapper.ToSmartDeviceDashboardModel(d)).ToList();
         }
 
-        public List<SmartDeviceDashboardModel> GetAllSmartDevicesForCurrentUser()
+        public List<SmartDeviceDashboardModel> GetAllSmartDevicesForCurrentUser(string userName)
         {
-            var user = _httpContextAccessor.HttpContext?.User;
-            var dbUser = _userRepository.GetUserByName(user.Identity.Name);
+            var dbUser = _userRepository.GetUserByName(userName);
             return _smartDeviceRepository.GetAllDevicesForUser(dbUser.Id).Select(d => SmartDeviceMapper.ToSmartDeviceDashboardModel(d)).ToList();
         }
 
@@ -48,7 +47,6 @@ namespace EnergyDataPlatform.src.Application.Services.Implementation
 
         public void UpdateDevice(SmartDeviceDashboardModel smartDevice)
         {
-            var test = "";
             _smartDeviceRepository.UpdateDevice(SmartDeviceMapper.ToSmartDeviceEntity(smartDevice));
         } 
     } 

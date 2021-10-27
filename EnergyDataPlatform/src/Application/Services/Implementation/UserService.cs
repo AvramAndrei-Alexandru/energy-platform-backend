@@ -62,10 +62,12 @@ namespace EnergyDataPlatform.src.Application.Services.Implementation
 
                             var userRoles =  _userManager.GetRolesAsync(existingUser).Result;
                             var claim = new Claim(new IdentityOptions().ClaimsIdentity.RoleClaimType, userRoles[0]);
+                            var nameClaim = new Claim(ClaimTypes.Name, userModel.UserName);
                             var listClaims = new List<Claim>
                             {
                                 claim
                             };
+                            listClaims.Add(nameClaim);
                             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mySecretKey1234@2021.89"));
                             var signingInCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                             var tokenOptions = new JwtSecurityToken(

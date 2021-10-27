@@ -12,6 +12,6 @@ namespace EnergyDataPlatform.src.Application.Services.Interfaces
         void AddDevice(SmartDeviceDashboardModel smartDevice);
         void UpdateDevice(SmartDeviceDashboardModel smartDevice);
         void RemoveDevice(Guid id);
-        List<SmartDeviceDashboardModel> GetAllSmartDevicesForCurrentUser();
+        List<SmartDeviceDashboardModel> GetAllSmartDevicesForCurrentUser(string userName);
     }
 }

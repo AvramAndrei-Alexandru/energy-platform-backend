@@ -48,6 +48,7 @@ namespace EnergyDataPlatform.src.Application.Services.Implementation
 
         public void UpdateDevice(SmartDeviceDashboardModel smartDevice)
         {
+            var test = "";
             _smartDeviceRepository.UpdateDevice(SmartDeviceMapper.ToSmartDeviceEntity(smartDevice));
         } 
     } 

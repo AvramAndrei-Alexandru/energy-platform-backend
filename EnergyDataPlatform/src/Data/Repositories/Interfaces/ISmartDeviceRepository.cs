@@ -13,5 +13,6 @@ namespace EnergyDataPlatform.src.Data.Repositories.Interfaces
         void AddDevice(SmartDevice smartDevice);
         void UpdateDevice(SmartDevice smartDevice);
         void RemoveDevice(SmartDevice smartDevice);
+        decimal GetTotalEnergyConsumptionForDevice(Guid id);
     }
 }

@@ -35,6 +35,20 @@ namespace EnergyDataPlatform.src.Data.Repositories.Implementation
             return _context.SmartDevices.Include(s => s.SensorMeasurements).FirstOrDefault(s => s.Id == id);
         }
 
+        public decimal GetTotalEnergyConsumptionForDevice(Guid id)
+        {
+            var device = _context.SmartDevices.Include(d => d.SensorMeasurements).FirstOrDefault(d => d.Id == id);
+            var totalEnergy = decimal.Zero;
+            if(device.SensorMeasurements != null && device.SensorMeasurements.Count != 0)
+            {
+                foreach (var measurement in device.SensorMeasurements)
+                {
+                    totalEnergy += measurement.Measurement;
+                }
+            }
+            return totalEnergy;
+        }
+
         public void RemoveDevice(SmartDevice smartDevice)
         {
             var device = _context.SmartDevices.Include(s => s.SensorMeasurements).FirstOrDefault(d => d.Id == smartDevice.Id);

@@ -14,5 +14,6 @@ namespace EnergyDataPlatform.src.Application.Models
         public decimal MaximumEnergyConsumption { get; set; }
         public decimal? AverageEnergyConsumption { get; set; }
         public string UserId { get; set; }
+        public decimal TotalEnergyConsumption { get; set; }
     }
 }

@@ -31,13 +31,23 @@ namespace EnergyDataPlatform.src.Application.Services.Implementation
 
         public List<SmartDeviceDashboardModel> GetAllDevicesForUser(string userId)
         {
-            return _smartDeviceRepository.GetAllDevicesForUser(userId).Select(d => SmartDeviceMapper.ToSmartDeviceDashboardModel(d)).ToList();
+            var deviceModels = _smartDeviceRepository.GetAllDevicesForUser(userId).Select(d => SmartDeviceMapper.ToSmartDeviceDashboardModel(d)).ToList();
+            deviceModels.ForEach(d =>
+            {
+                d.TotalEnergyConsumption = _smartDeviceRepository.GetTotalEnergyConsumptionForDevice(d.Id.Value);
+            });
+            return deviceModels;
         }
 
         public List<SmartDeviceDashboardModel> GetAllSmartDevicesForCurrentUser(string userName)
         {
             var dbUser = _userRepository.GetUserByName(userName);
-            return _smartDeviceRepository.GetAllDevicesForUser(dbUser.Id).Select(d => SmartDeviceMapper.ToSmartDeviceDashboardModel(d)).ToList();
+            var deviceModels = _smartDeviceRepository.GetAllDevicesForUser(dbUser.Id).Select(d => SmartDeviceMapper.ToSmartDeviceDashboardModel(d)).ToList();
+            deviceModels.ForEach(d =>
+            {
+                d.TotalEnergyConsumption = _smartDeviceRepository.GetTotalEnergyConsumptionForDevice(d.Id.Value);
+            });
+            return deviceModels;
         }
 
         public void RemoveDevice(Guid id)

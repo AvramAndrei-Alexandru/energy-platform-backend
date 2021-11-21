@@ -29,6 +29,7 @@ using EnergyDataPlatform.src.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using EnergyDataPlatform.src.Data.Mesaging;
 
 namespace EnergyDataPlatform
 {
@@ -60,7 +61,8 @@ namespace EnergyDataPlatform
             services.AddTransient<ISensorMeasurementService, SensorMeasurementService>();
             services.AddTransient<IValidator<SmartDeviceDashboardModel>, SmartDeviceValidator>();
             services.AddTransient<IValidator<SensorMeasurementDashboardModel>, SensorMeasurementValidator>();
-
+            services.AddTransient<IMessagingService, MessagingService>();
+            services.AddHostedService<QueueMessagingService>();
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<DatabaseContext>();
 
@@ -68,8 +70,9 @@ namespace EnergyDataPlatform
             {
                 options.AddPolicy("AllowAll", p =>
                 {
-                    p.AllowAnyOrigin()
+                    p.SetIsOriginAllowed(origin => true)
                     .AllowAnyHeader()
+                    .AllowCredentials()
                     .AllowAnyMethod();
                 });
             });
@@ -94,6 +97,23 @@ namespace EnergyDataPlatform
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = "https://localhost:44353",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mySecretKey1234@2021.89"))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/hubs/chat")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
@@ -126,7 +146,9 @@ namespace EnergyDataPlatform
                  });
             });
 
-            
+            services.AddSignalR();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -147,13 +169,14 @@ namespace EnergyDataPlatform
            
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
            // app.UseAuthentication();
             //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<MessageHub>("/api/message" );
             });
         }
     }

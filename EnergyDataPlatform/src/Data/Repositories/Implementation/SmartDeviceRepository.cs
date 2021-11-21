@@ -32,7 +32,7 @@ namespace EnergyDataPlatform.src.Data.Repositories.Implementation
 
         public SmartDevice GetDeviceById(Guid id)
         {
-            return _context.SmartDevices.Include(s => s.SensorMeasurements).FirstOrDefault(s => s.Id == id);
+            return _context.SmartDevices.Include(s => s.SensorMeasurements.OrderBy(m => m.Timestamp)).Include(s => s.User).FirstOrDefault(s => s.Id == id);
         }
 
         public decimal GetTotalEnergyConsumptionForDevice(Guid id)
@@ -69,6 +69,7 @@ namespace EnergyDataPlatform.src.Data.Repositories.Implementation
                 dbSmartDevice.MaximumEnergyConsumption = smartDevice.MaximumEnergyConsumption;
             }
             _context.SaveChanges();
+            _context.Entry(dbSmartDevice).Reload();
         }
     }
 }

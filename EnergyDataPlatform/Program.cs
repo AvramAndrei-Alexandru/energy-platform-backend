@@ -1,3 +1,4 @@
+using EnergyDataPlatform.src.Application.Services.Implementation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;

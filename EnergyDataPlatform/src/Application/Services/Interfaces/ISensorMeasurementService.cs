@@ -1,4 +1,5 @@
 ﻿using EnergyDataPlatform.src.Application.Models;
+using EnergyDataPlatform.src.Data.Mesaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace EnergyDataPlatform.src.Application.Services.Interfaces
         List<SensorMeasurementDashboardModel> GetAllMeasurementsForDevice(Guid deviceId);
         void AddSensorMeasurement(SensorMeasurementDashboardModel sensorMeasurement);
         List<SensorMeasurementDashboardModel> GetDeviceMeasurementsForGivenDay(Guid deviceId, DateTimeOffset startDate, DateTimeOffset endDate);
+        void AddSensorMeasurementFromExternalQueue(Message message);
     }
 }

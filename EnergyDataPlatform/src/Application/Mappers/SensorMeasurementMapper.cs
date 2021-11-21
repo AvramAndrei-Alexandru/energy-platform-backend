@@ -1,5 +1,6 @@
 ﻿using EnergyDataPlatform.src.Application.Models;
 using EnergyDataPlatform.src.Data.Entities;
+using EnergyDataPlatform.src.Data.Mesaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,22 @@ namespace EnergyDataPlatform.src.Application.Mappers
                 Timestamp = sensorMeasurement.Timestamp,
                 Measurement = sensorMeasurement.Measurement,
                 SmartDeviceId = sensorMeasurement.SmartDeviceId
+            };
+        }
+
+        public static SensorMeasurement ToSensorMeasurement(Message message)
+        {
+            if(message == null)
+            {
+                return null;
+            }
+
+            return new SensorMeasurement
+            {
+                Id = Guid.NewGuid(),
+                Timestamp = message.TimeStamp,
+                Measurement = message.MeasurementValue,
+                SmartDeviceId = message.DeviceId
             };
         }
 

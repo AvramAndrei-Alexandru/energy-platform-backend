@@ -2,6 +2,7 @@
 using EnergyDataPlatform.src.Application.Models;
 using EnergyDataPlatform.src.Application.Services.Interfaces;
 using EnergyDataPlatform.src.Data.Entities;
+using EnergyDataPlatform.src.Data.Mesaging;
 using EnergyDataPlatform.src.Data.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,13 @@ namespace EnergyDataPlatform.src.Application.Services.Implementation
     {
         private readonly ISensorMeasurementRepository _sensorMeasurementRepository;
         private readonly ISmartDeviceRepository _smartDeviceRepository;
+        private readonly IMessagingService _messagingService;
 
-        public SensorMeasurementService(ISensorMeasurementRepository sensorMeasurementRepository, ISmartDeviceRepository smartDeviceRepository)
+        public SensorMeasurementService(IMessagingService messagingService, ISensorMeasurementRepository sensorMeasurementRepository, ISmartDeviceRepository smartDeviceRepository)
         {
             _sensorMeasurementRepository = sensorMeasurementRepository;
             _smartDeviceRepository = smartDeviceRepository;
+            _messagingService = messagingService;
             
         }
 
@@ -26,6 +29,25 @@ namespace EnergyDataPlatform.src.Application.Services.Implementation
         {
            var measurement = _sensorMeasurementRepository.AddSensorMeasurement(SensorMeasurementMapper.ToSensorMeasurementEntity(sensorMeasurement));
            UpdateAverageConsumption(measurement);
+        }
+
+        public void AddSensorMeasurementFromExternalQueue(Message message)
+        {
+            var newMeasurement = SensorMeasurementMapper.ToSensorMeasurement(message);
+            var lastMeasurement = _sensorMeasurementRepository.GetLastMeasurementValue(message.DeviceId);
+            var maximumValue = _smartDeviceRepository.GetDeviceById(message.DeviceId).MaximumEnergyConsumption;
+            if(lastMeasurement != null)
+            {
+                var timeDiff = newMeasurement.Timestamp.Subtract(lastMeasurement.Timestamp);
+                var powerPeak = (newMeasurement.Measurement - lastMeasurement.Measurement) / ((decimal) timeDiff.TotalHours);
+                if(powerPeak > maximumValue)
+                {
+                    _messagingService.SendMessageToAllClients(message, powerPeak);
+                }
+            }
+            _sensorMeasurementRepository.AddSensorMeasurement(newMeasurement);
+            UpdateAverageConsumption(newMeasurement);
+            _messagingService.SendUpdateMessage();
         }
 
         public List<SensorMeasurementDashboardModel> GetAllMeasurementsForDevice(Guid deviceId)

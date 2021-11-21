@@ -12,5 +12,6 @@ namespace EnergyDataPlatform.src.Data.Repositories.Interfaces
         SensorMeasurement AddSensorMeasurement(SensorMeasurement sensorMeasurement);
         int GetMeasurementCount(Guid deviceId);
         List<SensorMeasurement> GetMeasurementsForDeviceAndDate(Guid deviceId, DateTimeOffset startDate, DateTimeOffset endDate);
+        SensorMeasurement GetLastMeasurementValue(Guid deviceId);
     }
 }

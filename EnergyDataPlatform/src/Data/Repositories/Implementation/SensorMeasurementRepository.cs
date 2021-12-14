@@ -35,6 +35,11 @@ namespace EnergyDataPlatform.src.Data.Repositories.Implementation
             return _context.SensorMeasurements.OrderByDescending(s => s.Timestamp).FirstOrDefault(s => s.SmartDeviceId == deviceId);
         }
 
+        public SensorMeasurement GetMaximumSensorMeasurementForDevice(Guid deviceId)
+        {
+            return _context.SensorMeasurements.Where(s => s.SmartDeviceId == deviceId).OrderByDescending(s => s.Measurement).FirstOrDefault();
+        }
+
         public int GetMeasurementCount(Guid deviceId)
         {
             return _context.SensorMeasurements.Where(s => s.SmartDeviceId == deviceId).Count();

@@ -13,5 +13,8 @@ namespace EnergyDataPlatform.src.Application.Services.Interfaces
         void AddSensorMeasurement(SensorMeasurementDashboardModel sensorMeasurement);
         List<SensorMeasurementDashboardModel> GetDeviceMeasurementsForGivenDay(Guid deviceId, DateTimeOffset startDate, DateTimeOffset endDate);
         void AddSensorMeasurementFromExternalQueue(Message message);
+        List<SensorMeasurementDashboardModel> GetDeviceHourlyMeasurementsInGivenInterval(Guid deviceId, DateTimeOffset startDate, DateTimeOffset endDate);
+        List<SensorMeasurementDashboardModel> GetWeekBaseline(Guid deviceId, DateTimeOffset startDate, DateTimeOffset endDate);
+        TimeToStartMeasurementModel GetBestTimeToStartAndMeasurements(int duration, Guid deviceId, DateTimeOffset startDate, DateTimeOffset endDate);
     }
 }

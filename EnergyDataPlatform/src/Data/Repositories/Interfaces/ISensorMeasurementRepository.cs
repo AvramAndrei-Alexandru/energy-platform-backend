@@ -13,5 +13,6 @@ namespace EnergyDataPlatform.src.Data.Repositories.Interfaces
         int GetMeasurementCount(Guid deviceId);
         List<SensorMeasurement> GetMeasurementsForDeviceAndDate(Guid deviceId, DateTimeOffset startDate, DateTimeOffset endDate);
         SensorMeasurement GetLastMeasurementValue(Guid deviceId);
+        SensorMeasurement GetMaximumSensorMeasurementForDevice(Guid deviceId);
     }
 }
